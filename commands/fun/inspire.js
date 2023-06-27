@@ -18,16 +18,24 @@ const verses = [
   'Proverbs+22:15',
   'Mark+9:43',
   'Leviticus+20:10',
-  '',
+  'Proverbs+22:14',
+  'Matthew+5:28',
+  'Exodus+22:19',
 ]
 
-const randomVerse = verses[Math.floor(Math.random() * verses.length)]
+let lastQuote
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('inspire')
     .setDescription('Gives a great quote from the "good" book! 🙏'),
   async execute(interaction) {
+    // next few lines to not get the same quote twice in a row
+    let randomVerse = verses[Math.floor(Math.random() * verses.length)]
+    while (randomVerse === lastQuote) {
+      randomVerse = verses[Math.floor(Math.random() * verses.length)]
+    }
+    lastQuote = randomVerse
     const verseResult = await request(`https://bible-api.com/${randomVerse}`)
     const { text } = await verseResult.body.json()
     await interaction.editReply(text)
