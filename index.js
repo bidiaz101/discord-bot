@@ -1,6 +1,6 @@
 const fs = require('node:fs')
 const path = require('node:path')
-const { Client, Events, GatewayIntentBits, Collection } = require('discord.js')
+const { Client, Events, GatewayIntentBits, Collection, EmbedBuilder } = require('discord.js')
 const { token } = require('./config.json')
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] })
@@ -13,7 +13,7 @@ client.commands = new Collection();
 
 const foldersPath = path.join(__dirname, 'commands');
 const commandFolders = fs.readdirSync(foldersPath)
-// test comment
+
 for (const folder of commandFolders) {
 	const commandsPath = path.join(foldersPath, folder);
 	const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'))
@@ -41,7 +41,13 @@ client.on(Events.InteractionCreate, async interaction => {
 	}
 
 	try {
+
+		if (interaction.commandName === 'inspire') {
+			await interaction.deferReply();
+		}
+
 		await command.execute(interaction);
+
 	} catch (error) {
 		console.error(error);
 		if (interaction.replied || interaction.deferred) {
